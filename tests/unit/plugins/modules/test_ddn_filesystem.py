@@ -1,6 +1,5 @@
 """Unit tests for ddn_filesystem module."""
 
-import pytest
 from unittest.mock import patch
 
 
