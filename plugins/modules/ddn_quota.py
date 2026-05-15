@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # Copyright 2026 Steve Fulmer
 # Apache-2.0 (see LICENSE)
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """Ansible module: ddn_quota."""
 
@@ -19,29 +21,29 @@ author:
     - Steve Fulmer (@stevefulme1)
 options:
     state:
-        description: Desired state of the quota.
+        description: Desired state of the resource.
         type: str
         default: present
         choices: [present, absent]
-    filesystem:
-        description: Filesystem name.
+    host:
+        description: API host address.
         type: str
         required: true
-    quota_type:
-        description: Quota type (user or group).
+    username:
+        description: Authentication username.
         type: str
-        choices: [user, group]
-        default: user
-    name:
-        description: User or group name.
+    password:
+        description: Authentication password.
         type: str
-        required: true
-    soft_limit:
-        description: Soft limit (e.g., '10TB').
+        no_log: true
+    api_key:
+        description: API key for authentication.
         type: str
-    hard_limit:
-        description: Hard limit (e.g., '15TB').
-        type: str
+        no_log: true
+    validate_certs:
+        description: Whether to validate SSL certificates.
+        type: bool
+        default: true
 """
 
 EXAMPLES = r"""
