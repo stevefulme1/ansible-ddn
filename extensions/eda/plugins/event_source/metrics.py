@@ -1,44 +1,36 @@
-"""Poll Ddn API for events/alerts."""
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2026 Steve Fulmer
+# Apache-2.0 (see LICENSE)
+
+"""DDN metrics polling event source for EDA."""
+
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
 
 import asyncio
-import logging
-from typing import Any
-
-IMPORT_ERRORS = []
-try:
-    import requests
-except ImportError as ie:
-    IMPORT_ERRORS.append(ie)
-
-logger = logging.getLogger(__name__)
+import aiohttp
 
 
-async def main(queue: asyncio.Queue, args: dict[str, Any]) -> None:
-    """Poll Ddn for alerts and forward to the EDA rulebook."""
-    for exc in IMPORT_ERRORS:
-        raise exc
-
+async def main(queue, args):
+    """Poll DDN metrics."""
     host = args["host"]
-    interval = int(args.get("interval", 60))
-    api_key = args.get("api_key", "")
-
-    headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
-    seen = set()
-
+    username = args.get("username")
+    password = args.get("password")
+    interval = args.get("interval", 60)
+    
     while True:
         try:
-            resp = requests.get(
-                f"https://{host}/api/v1/metrics",
-                headers=headers,
-                timeout=30,
-            )
-            resp.raise_for_status()
-            for item in resp.json().get("data", resp.json() if isinstance(resp.json(), list) else []):
-                item_id = str(item.get("id", ""))
-                if item_id and item_id not in seen:
-                    seen.add(item_id)
-                    await queue.put({"ddn": item})
-        except Exception as exc:
-            logger.error("Error polling Ddn: %s", exc)
-
+            async with aiohttp.ClientSession() as session:
+                url = f"https://{host}/api/v1/metrics"
+                async with session.get(url, auth=aiohttp.BasicAuth(username, password)) as resp:
+                    metrics = await resp.json()
+                    await queue.put({"metrics": metrics})
+        except Exception as e:
+            await queue.put({"error": str(e)})
+        
         await asyncio.sleep(interval)
+
+
+if __name__ == "__main__":
+    pass

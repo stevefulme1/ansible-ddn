@@ -13,37 +13,38 @@ DOCUMENTATION = r"""
 module: ddn_quota_info
 short_description: Retrieve quota information
 description:
-    - Retrieve details about quotas.
-    - This is a read-only module.
+    - Retrieve user and group quota information.
 version_added: "1.0.0"
 author:
     - Steve Fulmer (@stevefulme1)
 options:
-    quota_id:
-        description: ID of a specific quota to retrieve.
+    filesystem:
+        description: Filesystem name.
         type: str
+        required: true
+    quota_type:
+        description: Filter by quota type.
+        type: str
+        choices: [user, group]
     name:
-        description: Filter by name.
+        description: Filter by user/group name.
         type: str
 """
 
 EXAMPLES = r"""
-- name: List all quotas
+- name: Get all quotas
   stevefulme1.ddn.ddn_quota_info:
-  register: result
-
-- name: Get a specific quota
-  stevefulme1.ddn.ddn_quota_info:
-    quota_id: "example-id"
-  register: result
+    host: insight.example.com
+    username: admin
+    password: "{{ vault_pass }}"
+    filesystem: scratch
 """
 
 RETURN = r"""
 quotas:
-    description: List of quota details.
+    description: List of quotas.
     returned: always
     type: list
-    elements: dict
 """
 
 from ansible.module_utils.basic import AnsibleModule
@@ -58,7 +59,8 @@ except ImportError:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            quota_id=dict(type="str"),
+            filesystem=dict(type="str", required=True),
+            quota_type=dict(type="str", choices=["user", "group"]),
             name=dict(type="str"),
             host=dict(type="str", required=True),
             username=dict(type="str"),
@@ -73,15 +75,8 @@ def main():
         module.fail_json(msg="Required Python libraries not found.")
 
     client = ApiClient(module)
-    resource_id = module.params.get("quota_id")
-
-    if resource_id:
-        result = client.get("quota", resource_id)
-        resources = [result] if result else []
-    else:
-        resources = client.list("quota", module.params)
-
-    module.exit_json(changed=False, quotas=resources)
+    quotas = client.list("quota", module.params)
+    module.exit_json(changed=False, quotas=quotas)
 
 
 if __name__ == "__main__":

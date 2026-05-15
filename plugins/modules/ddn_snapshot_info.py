@@ -11,39 +11,25 @@ __metaclass__ = type
 DOCUMENTATION = r"""
 ---
 module: ddn_snapshot_info
-short_description: Retrieve snapshot information
-description:
-    - Retrieve details about snapshots.
-    - This is a read-only module.
+short_description: snapshot_info_DESC
 version_added: "1.0.0"
 author:
     - Steve Fulmer (@stevefulme1)
-options:
-    snapshot_id:
-        description: ID of a specific snapshot to retrieve.
-        type: str
-    name:
-        description: Filter by name.
-        type: str
 """
 
 EXAMPLES = r"""
-- name: List all snapshots
+- name: Example
   stevefulme1.ddn.ddn_snapshot_info:
-  register: result
-
-- name: Get a specific snapshot
-  stevefulme1.ddn.ddn_snapshot_info:
-    snapshot_id: "example-id"
-  register: result
+    host: insight.example.com
+    username: admin
+    password: "{{ vault_pass }}"
 """
 
 RETURN = r"""
-snapshots:
-    description: List of snapshot details.
+result:
+    description: Operation result.
     returned: always
-    type: list
-    elements: dict
+    type: dict
 """
 
 from ansible.module_utils.basic import AnsibleModule
@@ -58,8 +44,6 @@ except ImportError:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            snapshot_id=dict(type="str"),
-            name=dict(type="str"),
             host=dict(type="str", required=True),
             username=dict(type="str"),
             password=dict(type="str", no_log=True),
@@ -73,15 +57,8 @@ def main():
         module.fail_json(msg="Required Python libraries not found.")
 
     client = ApiClient(module)
-    resource_id = module.params.get("snapshot_id")
-
-    if resource_id:
-        result = client.get("snapshot", resource_id)
-        resources = [result] if result else []
-    else:
-        resources = client.list("snapshot", module.params)
-
-    module.exit_json(changed=False, snapshots=resources)
+    result = client.list("snapshot_info_RESOURCE", module.params)
+    module.exit_json(changed=False, result=result)
 
 
 if __name__ == "__main__":

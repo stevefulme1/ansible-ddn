@@ -11,42 +11,54 @@ __metaclass__ = type
 DOCUMENTATION = r"""
 ---
 module: ddn_quota
-short_description: Manage DDN user/group quotas
+short_description: Manage DDN filesystem quotas
 description:
-    - Manage DDN user/group quotas in Ddn.
-    - Supports create, update, and delete operations.
+    - Manage user and group quotas on DDN filesystems.
 version_added: "1.0.0"
 author:
     - Steve Fulmer (@stevefulme1)
 options:
     state:
-        description: Desired state of the resource.
+        description: Desired state of the quota.
         type: str
         default: present
         choices: [present, absent]
-    quota_id:
-        description: Unique identifier of the quota.
+    filesystem:
+        description: Filesystem name.
         type: str
+        required: true
+    quota_type:
+        description: Quota type (user or group).
+        type: str
+        choices: [user, group]
+        default: user
     name:
-        description: Display name of the quota.
+        description: User or group name.
+        type: str
+        required: true
+    soft_limit:
+        description: Soft limit (e.g., '10TB').
+        type: str
+    hard_limit:
+        description: Hard limit (e.g., '15TB').
         type: str
 """
 
 EXAMPLES = r"""
-- name: Create a quota
+- name: Set user quota
   stevefulme1.ddn.ddn_quota:
-    name: my-quota
-    state: present
-
-- name: Delete a quota
-  stevefulme1.ddn.ddn_quota:
-    quota_id: "example-id"
-    state: absent
+    host: insight.example.com
+    username: admin
+    password: "{{ vault_pass }}"
+    filesystem: scratch
+    name: jdoe
+    soft_limit: 10TB
+    hard_limit: 15TB
 """
 
 RETURN = r"""
 quota:
-    description: Resource details.
+    description: Quota details.
     returned: on success
     type: dict
 """
@@ -64,8 +76,11 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             state=dict(type="str", default="present", choices=["present", "absent"]),
-            quota_id=dict(type="str"),
-            name=dict(type="str"),
+            filesystem=dict(type="str", required=True),
+            quota_type=dict(type="str", default="user", choices=["user", "group"]),
+            name=dict(type="str", required=True),
+            soft_limit=dict(type="str"),
+            hard_limit=dict(type="str"),
             host=dict(type="str", required=True),
             username=dict(type="str"),
             password=dict(type="str", no_log=True),
@@ -73,9 +88,6 @@ def main():
             validate_certs=dict(type="bool", default=True),
         ),
         supports_check_mode=True,
-        required_if=[
-            ("state", "absent", ("quota_id",)),
-        ],
     )
 
     if not HAS_CLIENT:
@@ -83,20 +95,12 @@ def main():
 
     client = ApiClient(module)
     state = module.params["state"]
-    resource_id = module.params.get("quota_id")
-
+    
     if state == "present":
-        if resource_id:
-            result = client.update("quota", resource_id, module.params)
-        else:
-            if module.check_mode:
-                module.exit_json(changed=True)
-            result = client.create("quota", module.params)
+        result = client.create("quota", module.params)
         module.exit_json(changed=True, quota=result)
     else:
-        if module.check_mode:
-            module.exit_json(changed=True)
-        client.delete("quota", resource_id)
+        client.delete("quota", module.params["name"])
         module.exit_json(changed=True)
 
 

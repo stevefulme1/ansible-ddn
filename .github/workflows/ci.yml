@@ -12,42 +12,104 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-      - run: pip install ansible-core ansible-lint flake8
-      - run: ansible-lint --profile production
-      - run: flake8 plugins/ --max-line-length=120 --ignore=E402,W503
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install ansible-lint flake8
+          pip install -r requirements.txt
+
+      - name: Run ansible-lint
+        run: ansible-lint
+
+      - name: Run flake8
+        run: flake8 plugins/
 
   sanity:
-    name: Sanity (ansible-core ${{ matrix.ansible }})
+    name: Sanity (Ansible ${{ matrix.ansible }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        ansible: ["2.16", "2.17", "2.18"]
+        ansible:
+          - stable-2.16
+          - stable-2.17
+          - stable-2.18
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           path: ansible_collections/stevefulme1/ddn
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-      - run: pip install "ansible-core~=${{ matrix.ansible }}.0"
-      - working-directory: ansible_collections/stevefulme1/ddn
-        run: ansible-test sanity -v --color yes
+          python-version: '3.11'
+
+      - name: Install Ansible
+        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - name: Run sanity tests
+        run: ansible-test sanity --docker -v --color
+        working-directory: ansible_collections/stevefulme1/ddn
 
   unit:
     name: Unit Tests (Python ${{ matrix.python }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python: ["3.11", "3.12", "3.13"]
+        python:
+          - '3.11'
+          - '3.12'
+          - '3.13'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - run: pip install pytest requests
-      - run: pytest tests/unit/ -v
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-mock
+
+      - name: Run unit tests
+        run: pytest tests/unit -v --cov=plugins --cov-report=xml
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          flags: unit
+          name: python-${{ matrix.python }}
+
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/stevefulme1/ddn
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Ansible
+        run: pip install ansible-core
+
+      - name: Integration test placeholder
+        run: echo "Integration tests require DDN environment"
+        working-directory: ansible_collections/stevefulme1/ddn

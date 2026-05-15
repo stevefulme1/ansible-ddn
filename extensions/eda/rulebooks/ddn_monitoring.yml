@@ -1,0 +1,22 @@
+---
+- name: DDN Storage Monitoring
+  hosts: all
+  sources:
+    - stevefulme1.ddn.metrics:
+        host: insight.example.com
+        username: admin
+        password: "{{ vault_ddn_password }}"
+        interval: 60
+
+  rules:
+    - name: High filesystem usage alert
+      condition: event.metrics.filesystem_usage_percent > 90
+      action:
+        run_playbook:
+          name: alert_capacity.yml
+
+    - name: Performance degradation
+      condition: event.metrics.iops < 1000
+      action:
+        debug:
+          msg: "Performance degradation detected"

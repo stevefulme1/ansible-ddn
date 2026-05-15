@@ -3,73 +3,95 @@
 # Copyright 2026 Steve Fulmer
 # Apache-2.0 (see LICENSE)
 
-"""Shared API client for ddn collection."""
+"""DDN Insight API client."""
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-IMPORT_ERRORS = []
-try:
-    import requests
-    HAS_REQUESTS = True
-except ImportError as e:
-    HAS_REQUESTS = False
-    IMPORT_ERRORS.append(e)
+import json
+from ansible.module_utils.urls import open_url
+from ansible.module_utils.six.moves.urllib.error import HTTPError
 
 
 class ApiClient:
-    """REST API client for Ddn."""
+    """Client for DDN Insight REST API."""
 
     def __init__(self, module):
+        """Initialize API client from module params."""
         self.module = module
-        self.host = module.params["host"]
+        self.host = module.params.get("host")
+        self.username = module.params.get("username")
+        self.password = module.params.get("password")
+        self.api_key = module.params.get("api_key")
         self.validate_certs = module.params.get("validate_certs", True)
-        self.session = requests.Session()
-        self.session.verify = self.validate_certs
-        self._authenticate()
+        self.base_url = f"https://{self.host}/api/v1"
+        self.token = None
 
-    def _authenticate(self):
-        api_key = self.module.params.get("api_key")
-        username = self.module.params.get("username")
-        password = self.module.params.get("password")
+    def _get_headers(self):
+        """Get request headers."""
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        if self.token:
+            headers["Authorization"] = f"Bearer {self.token}"
+        elif self.api_key:
+            headers["X-API-Key"] = self.api_key
+        return headers
 
-        if api_key:
-            self.session.headers["Authorization"] = f"Bearer {api_key}"
-        elif username and password:
-            self.session.auth = (username, password)
+    def authenticate(self):
+        """Authenticate and get token."""
+        if self.api_key or self.token:
+            return
 
-    def _url(self, endpoint):
-        return f"https://{self.host}/api/v1/{endpoint}"
+        url = f"{self.base_url}/auth/login"
+        data = json.dumps({"username": self.username, "password": self.password})
 
-    def get(self, resource_type, resource_id):
-        resp = self.session.get(self._url(f"{resource_type}s/{resource_id}"))
-        if resp.status_code == 404:
-            return None
-        resp.raise_for_status()
-        return resp.json()
+        try:
+            response = open_url(
+                url,
+                method="POST",
+                data=data,
+                headers={"Content-Type": "application/json"},
+                validate_certs=self.validate_certs,
+            )
+            result = json.loads(response.read())
+            self.token = result.get("token")
+        except HTTPError as e:
+            self.module.fail_json(msg=f"Authentication failed: {str(e)}")
+
+    def request(self, method, path, data=None):
+        """Make API request."""
+        self.authenticate()
+        url = f"{self.base_url}{path}"
+
+        try:
+            response = open_url(
+                url,
+                method=method,
+                data=json.dumps(data) if data else None,
+                headers=self._get_headers(),
+                validate_certs=self.validate_certs,
+            )
+            if response.getcode() == 204:
+                return {}
+            return json.loads(response.read())
+        except HTTPError as e:
+            self.module.fail_json(msg=f"API request failed: {str(e)}")
 
     def list(self, resource_type, params=None):
-        resp = self.session.get(self._url(f"{resource_type}s"), params=params or {})
-        resp.raise_for_status()
-        data = resp.json()
-        if isinstance(data, list):
-            return data
-        return data.get("data", data.get("items", []))
+        """List resources."""
+        return self.request("GET", f"/{resource_type}s")
 
-    def create(self, resource_type, params):
-        resp = self.session.post(self._url(f"{resource_type}s"), json=params)
-        resp.raise_for_status()
-        return resp.json()
+    def get(self, resource_type, resource_id):
+        """Get resource."""
+        return self.request("GET", f"/{resource_type}s/{resource_id}")
 
-    def update(self, resource_type, resource_id, params):
-        resp = self.session.put(
-            self._url(f"{resource_type}s/{resource_id}"), json=params
-        )
-        resp.raise_for_status()
-        return resp.json()
+    def create(self, resource_type, data):
+        """Create resource."""
+        return self.request("POST", f"/{resource_type}s", data=data)
+
+    def update(self, resource_type, resource_id, data):
+        """Update resource."""
+        return self.request("PUT", f"/{resource_type}s/{resource_id}", data=data)
 
     def delete(self, resource_type, resource_id):
-        resp = self.session.delete(self._url(f"{resource_type}s/{resource_id}"))
-        if resp.status_code == 404:
-            return
-        resp.raise_for_status()
+        """Delete resource."""
+        return self.request("DELETE", f"/{resource_type}s/{resource_id}")

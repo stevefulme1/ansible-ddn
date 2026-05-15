@@ -1,44 +1,41 @@
-"""Receive Ddn alert events via webhook."""
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2026 Steve Fulmer
+# Apache-2.0 (see LICENSE)
+
+"""DDN webhook event source for EDA."""
+
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
 
 import asyncio
-import json
-import logging
-from typing import Any
 from aiohttp import web
 
-logger = logging.getLogger(__name__)
+
+async def webhook_handler(request):
+    """Handle webhook requests."""
+    data = await request.json()
+    return web.Response(text="OK")
 
 
-async def main(queue: asyncio.Queue, args: dict[str, Any]) -> None:
-    """Receive Ddn webhook events and forward to the EDA rulebook."""
-    host = str(args.get("host", "0.0.0.0"))
-    port = int(args.get("port", 5000))
-    token = args.get("token", "")
-
+async def main(queue, args):
+    """Main event source loop."""
+    port = args.get("port", 5000)
+    
     app = web.Application()
-
-    async def _handle(request: web.Request) -> web.Response:
-        try:
-            payload = await request.json()
-            event = {{"{cn}": payload}}
-            await queue.put(event)
-            return web.Response(status=200, text="OK")
-        except Exception as exc:
-            logger.exception("Error processing webhook: %s", exc)
-            return web.Response(status=500, text="Error")
-
-    app.router.add_post("/", _handle)
-    app.router.add_post("/webhook", _handle)
-    app.router.add_get("/health", lambda r: web.Response(text="OK"))
-
+    app.router.add_post("/webhook", webhook_handler)
+    
     runner = web.AppRunner(app)
     await runner.setup()
-    site = web.TCPSite(runner, host, port)
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    
     await site.start()
-    logger.info("Ddn webhook listener on %s:%d", host, port)
-
+    
     try:
-        while True:
-            await asyncio.sleep(3600)
+        await asyncio.sleep(float("inf"))
     finally:
         await runner.cleanup()
+
+
+if __name__ == "__main__":
+    pass
