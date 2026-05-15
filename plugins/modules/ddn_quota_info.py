@@ -39,6 +39,10 @@ options:
         description: Whether to validate SSL certificates.
         type: bool
         default: true
+
+    filesystem:
+        description: The filesystem.
+        type: str
 """
 
 EXAMPLES = r"""
