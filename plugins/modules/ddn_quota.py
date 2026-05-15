@@ -97,7 +97,7 @@ def main():
 
     client = ApiClient(module)
     state = module.params["state"]
-    
+
     if state == "present":
         result = client.create("quota", module.params)
         module.exit_json(changed=True, quota=result)
