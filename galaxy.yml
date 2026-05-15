@@ -1,7 +1,7 @@
 ---
 namespace: stevefulme1
 name: ddn
-version: 1.0.0
+version: 1.0.1
 readme: README.md
 authors:
   - Steven Fulmer <sfulmer@redhat.com>
