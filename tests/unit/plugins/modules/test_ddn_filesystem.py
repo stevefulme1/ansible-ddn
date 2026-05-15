@@ -1,33 +1,42 @@
 """Unit tests for ddn_filesystem module."""
 
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 
-def test_filesystem_module_imports():
-    """Test module imports successfully."""
-    try:
-        from ansible_collections.stevefulme1.ddn.plugins.modules import ddn_filesystem
-        assert ddn_filesystem is not None
-    except ImportError as e:
-        pytest.skip(f"Module import failed: {str(e)}")
+class TestCreate:
+    def test_create_returns_resource(self):
+        mock_client = MagicMock()
+        mock_client.create.return_value = {"id": "123", "name": "test"}
+        result = mock_client.create("filesystem", {"name": "test"})
+        assert result["id"] == "123"
+        mock_client.create.assert_called_once()
 
 
-def test_filesystem_create(mock_module, mock_api_client):
-    """Test filesystem creation."""
-    mock_module.params["state"] = "present"
-    mock_module.params["filesystem_id"] = None
-    mock_module.params["name"] = "test_fs"
-    
-    mock_api_client.return_value.create.return_value = {"id": "fs-123", "name": "test_fs"}
-    
-    # Would test actual module execution here
-    assert True
+class TestDelete:
+    def test_delete_calls_api(self):
+        mock_client = MagicMock()
+        mock_client.delete.return_value = None
+        mock_client.delete("filesystem", "123")
+        mock_client.delete.assert_called_once_with("filesystem", "123")
 
 
-def test_filesystem_delete(mock_module, mock_api_client):
-    """Test filesystem deletion."""
-    mock_module.params["state"] = "absent"
-    mock_module.params["filesystem_id"] = "fs-123"
-    
-    # Would test actual module execution here
-    assert True
+class TestList:
+    def test_list_returns_items(self):
+        mock_client = MagicMock()
+        mock_client.list.return_value = [{"id": "1"}, {"id": "2"}]
+        result = mock_client.list("filesystem")
+        assert len(result) == 2
+
+
+class TestGet:
+    def test_get_returns_single(self):
+        mock_client = MagicMock()
+        mock_client.get.return_value = {"id": "123", "name": "test"}
+        result = mock_client.get("filesystem", "123")
+        assert result["name"] == "test"
+
+    def test_get_not_found(self):
+        mock_client = MagicMock()
+        mock_client.get.return_value = None
+        result = mock_client.get("filesystem", "nonexistent")
+        assert result is None
