@@ -1,0 +1,28 @@
+---
+- name: "Ddn Alert Remediation"
+  hosts: all
+  sources:
+    - stevefulme1.ddn.webhook:
+        host: 0.0.0.0
+        port: 5000
+
+  rules:
+    - name: Critical alert - auto-remediate
+      condition: >-
+        event.ddn.severity is defined and
+        event.ddn.severity == "critical"
+      action:
+        run_playbook:
+          name: remediate.yml
+          extra_vars:
+            alert_host: "{{ event.ddn.host | default('') }}"
+            alert_id: "{{ event.ddn.id | default('') }}"
+            severity: "{{ event.ddn.severity }}"
+
+    - name: Warning alert - notify
+      condition: >-
+        event.ddn.severity is defined and
+        event.ddn.severity == "warning"
+      action:
+        print_event:
+          pretty: true

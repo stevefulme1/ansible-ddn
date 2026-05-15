@@ -1,0 +1,31 @@
+---
+namespace: stevefulme1
+name: ddn
+version: 1.0.0
+readme: README.md
+authors:
+  - Steven Fulmer <sfulmer@redhat.com>
+description: Ansible Collection for DDN Storage (DataDirect Networks) automation
+license:
+  - Apache-2.0
+license_file: LICENSE
+tags:
+  - storage
+  - lustre
+  - ddn
+  - filesystem
+  - hpc
+  - infrastructure
+dependencies: {}
+repository: https://github.com/stevefulme1/ansible-ddn
+documentation: https://github.com/stevefulme1/ansible-ddn/blob/main/README.md
+homepage: https://github.com/stevefulme1/ansible-ddn
+issues: https://github.com/stevefulme1/ansible-ddn/issues
+build_ignore:
+  - .gitignore
+  - .ansible-lint
+  - tests/output
+  - '*.pyc'
+  - '*.retry'
+  - .pytest_cache
+  - __pycache__
