@@ -1,0 +1,16 @@
+---
+# tasks/main.yml for ddn_filesystem_deploy
+# Deploy Lustre filesystem with OSTs and MDTs
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - ddn_filesystem_deploy_host is defined
+    fail_msg: "ddn_filesystem_deploy_host must be defined"
+    quiet: true
+
+- name: Execute ddn filesystem deploy
+  ansible.builtin.debug:
+    msg: >-
+      Deploy Lustre filesystem with OSTs and MDTs.
+      Target: {{ ddn_filesystem_deploy_host }}

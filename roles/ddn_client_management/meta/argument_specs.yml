@@ -1,0 +1,27 @@
+---
+argument_specs:
+  main:
+    short_description: "Configure and manage Lustre clients"
+    options:
+      ddn_client_management_host:
+        description: Target host address
+        type: str
+        required: true
+      ddn_client_management_username:
+        description: Authentication username
+        type: str
+      ddn_client_management_password:
+        description: Authentication password
+        type: str
+      ddn_client_management_api_key:
+        description: API key for authentication
+        type: str
+      ddn_client_management_validate_certs:
+        description: Validate SSL certificates
+        type: bool
+        default: true
+      ddn_client_management_state:
+        description: Desired state
+        type: str
+        default: present
+        choices: [present, absent]

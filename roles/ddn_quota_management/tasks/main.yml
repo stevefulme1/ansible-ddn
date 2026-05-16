@@ -1,0 +1,16 @@
+---
+# tasks/main.yml for ddn_quota_management
+# Configure user and group quotas
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - ddn_quota_management_host is defined
+    fail_msg: "ddn_quota_management_host must be defined"
+    quiet: true
+
+- name: Execute ddn quota management
+  ansible.builtin.debug:
+    msg: >-
+      Configure user and group quotas.
+      Target: {{ ddn_quota_management_host }}

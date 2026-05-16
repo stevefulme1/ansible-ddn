@@ -1,0 +1,16 @@
+---
+# tasks/main.yml for ddn_replication_setup
+# Configure data replication between clusters
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - ddn_replication_setup_host is defined
+    fail_msg: "ddn_replication_setup_host must be defined"
+    quiet: true
+
+- name: Execute ddn replication setup
+  ansible.builtin.debug:
+    msg: >-
+      Configure data replication between clusters.
+      Target: {{ ddn_replication_setup_host }}

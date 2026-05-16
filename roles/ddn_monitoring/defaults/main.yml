@@ -1,0 +1,14 @@
+---
+# defaults/main.yml for ddn_monitoring
+
+# Target host
+ddn_monitoring_host: ""
+
+# Authentication
+ddn_monitoring_username: ""
+ddn_monitoring_password: ""
+ddn_monitoring_api_key: ""
+
+# Behavior
+ddn_monitoring_validate_certs: true
+ddn_monitoring_state: present

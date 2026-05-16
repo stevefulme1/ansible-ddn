@@ -1,0 +1,14 @@
+---
+# defaults/main.yml for ddn_replication_setup
+
+# Target host
+ddn_replication_setup_host: ""
+
+# Authentication
+ddn_replication_setup_username: ""
+ddn_replication_setup_password: ""
+ddn_replication_setup_api_key: ""
+
+# Behavior
+ddn_replication_setup_validate_certs: true
+ddn_replication_setup_state: present

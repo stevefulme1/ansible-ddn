@@ -1,0 +1,14 @@
+---
+# defaults/main.yml for ddn_health_check
+
+# Target host
+ddn_health_check_host: ""
+
+# Authentication
+ddn_health_check_username: ""
+ddn_health_check_password: ""
+ddn_health_check_api_key: ""
+
+# Behavior
+ddn_health_check_validate_certs: true
+ddn_health_check_state: present

@@ -1,0 +1,14 @@
+---
+# defaults/main.yml for ddn_backup_restore
+
+# Target host
+ddn_backup_restore_host: ""
+
+# Authentication
+ddn_backup_restore_username: ""
+ddn_backup_restore_password: ""
+ddn_backup_restore_api_key: ""
+
+# Behavior
+ddn_backup_restore_validate_certs: true
+ddn_backup_restore_state: present

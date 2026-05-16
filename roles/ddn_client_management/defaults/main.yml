@@ -1,0 +1,14 @@
+---
+# defaults/main.yml for ddn_client_management
+
+# Target host
+ddn_client_management_host: ""
+
+# Authentication
+ddn_client_management_username: ""
+ddn_client_management_password: ""
+ddn_client_management_api_key: ""
+
+# Behavior
+ddn_client_management_validate_certs: true
+ddn_client_management_state: present

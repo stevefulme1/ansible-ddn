@@ -1,0 +1,27 @@
+---
+argument_specs:
+  main:
+    short_description: "Optimize I/O scheduling and caching"
+    options:
+      ddn_performance_tuning_host:
+        description: Target host address
+        type: str
+        required: true
+      ddn_performance_tuning_username:
+        description: Authentication username
+        type: str
+      ddn_performance_tuning_password:
+        description: Authentication password
+        type: str
+      ddn_performance_tuning_api_key:
+        description: API key for authentication
+        type: str
+      ddn_performance_tuning_validate_certs:
+        description: Validate SSL certificates
+        type: bool
+        default: true
+      ddn_performance_tuning_state:
+        description: Desired state
+        type: str
+        default: present
+        choices: [present, absent]

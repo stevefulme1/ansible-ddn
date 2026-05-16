@@ -1,0 +1,16 @@
+---
+# tasks/main.yml for ddn_capacity_expansion
+# Add OSTs and storage to existing filesystem
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - ddn_capacity_expansion_host is defined
+    fail_msg: "ddn_capacity_expansion_host must be defined"
+    quiet: true
+
+- name: Execute ddn capacity expansion
+  ansible.builtin.debug:
+    msg: >-
+      Add OSTs and storage to existing filesystem.
+      Target: {{ ddn_capacity_expansion_host }}

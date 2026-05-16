@@ -1,0 +1,14 @@
+---
+# defaults/main.yml for ddn_performance_tuning
+
+# Target host
+ddn_performance_tuning_host: ""
+
+# Authentication
+ddn_performance_tuning_username: ""
+ddn_performance_tuning_password: ""
+ddn_performance_tuning_api_key: ""
+
+# Behavior
+ddn_performance_tuning_validate_certs: true
+ddn_performance_tuning_state: present

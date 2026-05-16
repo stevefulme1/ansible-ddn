@@ -1,0 +1,14 @@
+---
+# defaults/main.yml for ddn_filesystem_deploy
+
+# Target host
+ddn_filesystem_deploy_host: ""
+
+# Authentication
+ddn_filesystem_deploy_username: ""
+ddn_filesystem_deploy_password: ""
+ddn_filesystem_deploy_api_key: ""
+
+# Behavior
+ddn_filesystem_deploy_validate_certs: true
+ddn_filesystem_deploy_state: present

@@ -1,0 +1,14 @@
+---
+# defaults/main.yml for ddn_security_hardening
+
+# Target host
+ddn_security_hardening_host: ""
+
+# Authentication
+ddn_security_hardening_username: ""
+ddn_security_hardening_password: ""
+ddn_security_hardening_api_key: ""
+
+# Behavior
+ddn_security_hardening_validate_certs: true
+ddn_security_hardening_state: present

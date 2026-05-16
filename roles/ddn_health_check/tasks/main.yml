@@ -1,0 +1,16 @@
+---
+# tasks/main.yml for ddn_health_check
+# Run comprehensive cluster health diagnostics
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - ddn_health_check_host is defined
+    fail_msg: "ddn_health_check_host must be defined"
+    quiet: true
+
+- name: Execute ddn health check
+  ansible.builtin.debug:
+    msg: >-
+      Run comprehensive cluster health diagnostics.
+      Target: {{ ddn_health_check_host }}

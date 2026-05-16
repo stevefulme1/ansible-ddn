@@ -1,0 +1,16 @@
+---
+# tasks/main.yml for ddn_performance_tuning
+# Optimize I/O scheduling and caching
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - ddn_performance_tuning_host is defined
+    fail_msg: "ddn_performance_tuning_host must be defined"
+    quiet: true
+
+- name: Execute ddn performance tuning
+  ansible.builtin.debug:
+    msg: >-
+      Optimize I/O scheduling and caching.
+      Target: {{ ddn_performance_tuning_host }}

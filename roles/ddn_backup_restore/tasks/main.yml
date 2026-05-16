@@ -1,0 +1,16 @@
+---
+# tasks/main.yml for ddn_backup_restore
+# Configure snapshots and restore
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - ddn_backup_restore_host is defined
+    fail_msg: "ddn_backup_restore_host must be defined"
+    quiet: true
+
+- name: Execute ddn backup restore
+  ansible.builtin.debug:
+    msg: >-
+      Configure snapshots and restore.
+      Target: {{ ddn_backup_restore_host }}

@@ -1,0 +1,16 @@
+---
+# tasks/main.yml for ddn_security_hardening
+# Apply security policies and access controls
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - ddn_security_hardening_host is defined
+    fail_msg: "ddn_security_hardening_host must be defined"
+    quiet: true
+
+- name: Execute ddn security hardening
+  ansible.builtin.debug:
+    msg: >-
+      Apply security policies and access controls.
+      Target: {{ ddn_security_hardening_host }}

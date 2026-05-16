@@ -1,0 +1,14 @@
+---
+# defaults/main.yml for ddn_quota_management
+
+# Target host
+ddn_quota_management_host: ""
+
+# Authentication
+ddn_quota_management_username: ""
+ddn_quota_management_password: ""
+ddn_quota_management_api_key: ""
+
+# Behavior
+ddn_quota_management_validate_certs: true
+ddn_quota_management_state: present

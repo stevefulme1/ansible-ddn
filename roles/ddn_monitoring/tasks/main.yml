@@ -1,0 +1,16 @@
+---
+# tasks/main.yml for ddn_monitoring
+# Set up LustrePerfMon and alerting
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - ddn_monitoring_host is defined
+    fail_msg: "ddn_monitoring_host must be defined"
+    quiet: true
+
+- name: Execute ddn monitoring
+  ansible.builtin.debug:
+    msg: >-
+      Set up LustrePerfMon and alerting.
+      Target: {{ ddn_monitoring_host }}

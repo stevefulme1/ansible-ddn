@@ -1,0 +1,27 @@
+---
+argument_specs:
+  main:
+    short_description: "Run comprehensive cluster health diagnostics"
+    options:
+      ddn_health_check_host:
+        description: Target host address
+        type: str
+        required: true
+      ddn_health_check_username:
+        description: Authentication username
+        type: str
+      ddn_health_check_password:
+        description: Authentication password
+        type: str
+      ddn_health_check_api_key:
+        description: API key for authentication
+        type: str
+      ddn_health_check_validate_certs:
+        description: Validate SSL certificates
+        type: bool
+        default: true
+      ddn_health_check_state:
+        description: Desired state
+        type: str
+        default: present
+        choices: [present, absent]

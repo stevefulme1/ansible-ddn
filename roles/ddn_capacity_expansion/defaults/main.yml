@@ -1,0 +1,14 @@
+---
+# defaults/main.yml for ddn_capacity_expansion
+
+# Target host
+ddn_capacity_expansion_host: ""
+
+# Authentication
+ddn_capacity_expansion_username: ""
+ddn_capacity_expansion_password: ""
+ddn_capacity_expansion_api_key: ""
+
+# Behavior
+ddn_capacity_expansion_validate_certs: true
+ddn_capacity_expansion_state: present

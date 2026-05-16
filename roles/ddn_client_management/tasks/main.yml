@@ -1,0 +1,16 @@
+---
+# tasks/main.yml for ddn_client_management
+# Configure and manage Lustre clients
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - ddn_client_management_host is defined
+    fail_msg: "ddn_client_management_host must be defined"
+    quiet: true
+
+- name: Execute ddn client management
+  ansible.builtin.debug:
+    msg: >-
+      Configure and manage Lustre clients.
+      Target: {{ ddn_client_management_host }}

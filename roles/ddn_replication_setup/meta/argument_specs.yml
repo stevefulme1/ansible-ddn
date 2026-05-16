@@ -1,0 +1,27 @@
+---
+argument_specs:
+  main:
+    short_description: "Configure data replication between clusters"
+    options:
+      ddn_replication_setup_host:
+        description: Target host address
+        type: str
+        required: true
+      ddn_replication_setup_username:
+        description: Authentication username
+        type: str
+      ddn_replication_setup_password:
+        description: Authentication password
+        type: str
+      ddn_replication_setup_api_key:
+        description: API key for authentication
+        type: str
+      ddn_replication_setup_validate_certs:
+        description: Validate SSL certificates
+        type: bool
+        default: true
+      ddn_replication_setup_state:
+        description: Desired state
+        type: str
+        default: present
+        choices: [present, absent]
