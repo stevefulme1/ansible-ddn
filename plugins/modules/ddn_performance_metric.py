@@ -104,14 +104,30 @@ def main():
     resource_id = module.params.get("metric_id")
 
     if state == "present":
+        existing = None
         if resource_id:
-            result = client.update("performance_metric", resource_id, module.params)
+            existing = client.get("performance_metric", resource_id)
+        elif module.params.get("name"):
+            candidates = client.list("performance_metric", {{"name": module.params["name"]}})
+            if candidates:
+                existing = candidates[0]
+
+        if existing:
+            if module.check_mode:
+                module.exit_json(changed=False, performance_metric=existing)
+            result = client.update("performance_metric", resource_id or existing.get("id", ""), module.params)
+            module.exit_json(changed=True, performance_metric=result)
         else:
             if module.check_mode:
                 module.exit_json(changed=True)
             result = client.create("performance_metric", module.params)
-        module.exit_json(changed=True, performance_metric=result)
+            module.exit_json(changed=True, performance_metric=result)
     else:
+        existing = None
+        if resource_id:
+            existing = client.get("performance_metric", resource_id)
+        if not existing:
+            module.exit_json(changed=False)
         if module.check_mode:
             module.exit_json(changed=True)
         client.delete("performance_metric", resource_id)

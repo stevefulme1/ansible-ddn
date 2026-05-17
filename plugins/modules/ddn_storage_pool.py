@@ -101,14 +101,30 @@ def main():
     resource_id = module.params.get("pool_id")
 
     if state == "present":
+        existing = None
         if resource_id:
-            result = client.update("storage_pool", resource_id, module.params)
+            existing = client.get("storage_pool", resource_id)
+        elif module.params.get("name"):
+            candidates = client.list("storage_pool", {{"name": module.params["name"]}})
+            if candidates:
+                existing = candidates[0]
+
+        if existing:
+            if module.check_mode:
+                module.exit_json(changed=False, storage_pool=existing)
+            result = client.update("storage_pool", resource_id or existing.get("id", ""), module.params)
+            module.exit_json(changed=True, storage_pool=result)
         else:
             if module.check_mode:
                 module.exit_json(changed=True)
             result = client.create("storage_pool", module.params)
-        module.exit_json(changed=True, storage_pool=result)
+            module.exit_json(changed=True, storage_pool=result)
     else:
+        existing = None
+        if resource_id:
+            existing = client.get("storage_pool", resource_id)
+        if not existing:
+            module.exit_json(changed=False)
         if module.check_mode:
             module.exit_json(changed=True)
         client.delete("storage_pool", resource_id)

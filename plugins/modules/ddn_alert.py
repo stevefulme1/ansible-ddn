@@ -104,14 +104,30 @@ def main():
     resource_id = module.params.get("alert_id")
 
     if state == "present":
+        existing = None
         if resource_id:
-            result = client.update("alert", resource_id, module.params)
+            existing = client.get("alert", resource_id)
+        elif module.params.get("name"):
+            candidates = client.list("alert", {{"name": module.params["name"]}})
+            if candidates:
+                existing = candidates[0]
+
+        if existing:
+            if module.check_mode:
+                module.exit_json(changed=False, alert=existing)
+            result = client.update("alert", resource_id or existing.get("id", ""), module.params)
+            module.exit_json(changed=True, alert=result)
         else:
             if module.check_mode:
                 module.exit_json(changed=True)
             result = client.create("alert", module.params)
-        module.exit_json(changed=True, alert=result)
+            module.exit_json(changed=True, alert=result)
     else:
+        existing = None
+        if resource_id:
+            existing = client.get("alert", resource_id)
+        if not existing:
+            module.exit_json(changed=False)
         if module.check_mode:
             module.exit_json(changed=True)
         client.delete("alert", resource_id)

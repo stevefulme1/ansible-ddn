@@ -104,14 +104,30 @@ def main():
     resource_id = module.params.get("group_id")
 
     if state == "present":
+        existing = None
         if resource_id:
-            result = client.update("raid_group", resource_id, module.params)
+            existing = client.get("raid_group", resource_id)
+        elif module.params.get("name"):
+            candidates = client.list("raid_group", {{"name": module.params["name"]}})
+            if candidates:
+                existing = candidates[0]
+
+        if existing:
+            if module.check_mode:
+                module.exit_json(changed=False, raid_group=existing)
+            result = client.update("raid_group", resource_id or existing.get("id", ""), module.params)
+            module.exit_json(changed=True, raid_group=result)
         else:
             if module.check_mode:
                 module.exit_json(changed=True)
             result = client.create("raid_group", module.params)
-        module.exit_json(changed=True, raid_group=result)
+            module.exit_json(changed=True, raid_group=result)
     else:
+        existing = None
+        if resource_id:
+            existing = client.get("raid_group", resource_id)
+        if not existing:
+            module.exit_json(changed=False)
         if module.check_mode:
             module.exit_json(changed=True)
         client.delete("raid_group", resource_id)

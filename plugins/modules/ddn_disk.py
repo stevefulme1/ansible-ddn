@@ -104,14 +104,30 @@ def main():
     resource_id = module.params.get("disk_id")
 
     if state == "present":
+        existing = None
         if resource_id:
-            result = client.update("disk", resource_id, module.params)
+            existing = client.get("disk", resource_id)
+        elif module.params.get("name"):
+            candidates = client.list("disk", {{"name": module.params["name"]}})
+            if candidates:
+                existing = candidates[0]
+
+        if existing:
+            if module.check_mode:
+                module.exit_json(changed=False, disk=existing)
+            result = client.update("disk", resource_id or existing.get("id", ""), module.params)
+            module.exit_json(changed=True, disk=result)
         else:
             if module.check_mode:
                 module.exit_json(changed=True)
             result = client.create("disk", module.params)
-        module.exit_json(changed=True, disk=result)
+            module.exit_json(changed=True, disk=result)
     else:
+        existing = None
+        if resource_id:
+            existing = client.get("disk", resource_id)
+        if not existing:
+            module.exit_json(changed=False)
         if module.check_mode:
             module.exit_json(changed=True)
         client.delete("disk", resource_id)

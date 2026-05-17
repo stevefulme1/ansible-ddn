@@ -104,14 +104,30 @@ def main():
     resource_id = module.params.get("interface_id")
 
     if state == "present":
+        existing = None
         if resource_id:
-            result = client.update("network_interface", resource_id, module.params)
+            existing = client.get("network_interface", resource_id)
+        elif module.params.get("name"):
+            candidates = client.list("network_interface", {{"name": module.params["name"]}})
+            if candidates:
+                existing = candidates[0]
+
+        if existing:
+            if module.check_mode:
+                module.exit_json(changed=False, network_interface=existing)
+            result = client.update("network_interface", resource_id or existing.get("id", ""), module.params)
+            module.exit_json(changed=True, network_interface=result)
         else:
             if module.check_mode:
                 module.exit_json(changed=True)
             result = client.create("network_interface", module.params)
-        module.exit_json(changed=True, network_interface=result)
+            module.exit_json(changed=True, network_interface=result)
     else:
+        existing = None
+        if resource_id:
+            existing = client.get("network_interface", resource_id)
+        if not existing:
+            module.exit_json(changed=False)
         if module.check_mode:
             module.exit_json(changed=True)
         client.delete("network_interface", resource_id)

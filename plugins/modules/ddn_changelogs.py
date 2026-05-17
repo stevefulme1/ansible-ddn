@@ -104,14 +104,30 @@ def main():
     resource_id = module.params.get("changelog_id")
 
     if state == "present":
+        existing = None
         if resource_id:
-            result = client.update("changelog", resource_id, module.params)
+            existing = client.get("changelog", resource_id)
+        elif module.params.get("name"):
+            candidates = client.list("changelog", {{"name": module.params["name"]}})
+            if candidates:
+                existing = candidates[0]
+
+        if existing:
+            if module.check_mode:
+                module.exit_json(changed=False, changelog=existing)
+            result = client.update("changelog", resource_id or existing.get("id", ""), module.params)
+            module.exit_json(changed=True, changelog=result)
         else:
             if module.check_mode:
                 module.exit_json(changed=True)
             result = client.create("changelog", module.params)
-        module.exit_json(changed=True, changelog=result)
+            module.exit_json(changed=True, changelog=result)
     else:
+        existing = None
+        if resource_id:
+            existing = client.get("changelog", resource_id)
+        if not existing:
+            module.exit_json(changed=False)
         if module.check_mode:
             module.exit_json(changed=True)
         client.delete("changelog", resource_id)
