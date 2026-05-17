@@ -43,6 +43,16 @@ options:
     filesystem:
         description: The filesystem.
         type: str
+  limit:
+    description:
+      - Maximum number of results to return.
+    type: int
+    default: 100
+  offset:
+    description:
+      - Number of results to skip for pagination.
+    type: int
+    default: 0
 """
 
 EXAMPLES = r"""
@@ -73,6 +83,8 @@ except ImportError:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
+            limit=dict(type='int', default=100),
+            offset=dict(type='int', default=0),
             filesystem=dict(type="str", required=True),
             quota_type=dict(type="str", choices=["user", "group"]),
             name=dict(type="str"),
