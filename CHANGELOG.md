@@ -1,53 +1,38 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [1.0.0]
+## [2.0.0] - 2026-05-17
 
 ### Added
+- Idempotency: get-before-write with state comparison in 22 modules
+- Pagination support (limit/offset) for all _info modules
+- Pre-commit and linting configuration
 
+### Fixed
+- Role README files added for Galaxy compliance
+- Galaxy import validation issues resolved
+
+### Security
+- Bumped requests>=2.32.5 to fix CVE-2023-32681, CVE-2024-35195
+- Use urlencode for API query parameters
+
+## [1.2.0] - 2026-05-15
+
+### Added
 - 50 modules covering full DDN Storage (EXAScaler/Lustre) platform API
-- CRUD + info module for every resource type
+- 10 Day-2 operation roles
+- Dynamic inventory plugin
 - EDA source plugins for event-driven automation
-- Unit tests and CI pipeline
 
-## [1.0.0-initial] - 2026-05-15
+## [1.0.1] - 2026-05-15
+
+### Fixed
+- Module documentation rendering on Galaxy
+- Module DOCUMENTATION: added all argument_spec params
+
+## [1.0.0] - 2026-05-15
 
 ### Added
-- Initial release of stevefulme1.ddn collection
-- Core modules for DDN Storage automation:
-  - `ddn_filesystem` - Lustre filesystem management
-  - `ddn_filesystem_info` - Filesystem information retrieval
-  - `ddn_storage_pool` - Storage pool management
-  - `ddn_storage_pool_info` - Storage pool information
-  - `ddn_quota` - User and group quota management
-  - `ddn_quota_info` - Quota information retrieval
-  - `ddn_snapshot` - Filesystem snapshot management
-  - `ddn_snapshot_info` - Snapshot information
-  - `ddn_health_check` - Health diagnostics execution
-  - `ddn_health_check_info` - Health check results
-  - `ddn_cluster_info` - Cluster topology information
-- Module utilities:
-  - `ddn_api.py` - DDN Insight REST API client
-- Documentation fragments:
-  - `ddn_auth.py` - Common authentication options
-- Inventory plugin:
-  - `ddn_inventory` - Dynamic inventory from DDN Insight API
-- Event-Driven Ansible (EDA) plugins:
-  - `webhook` - Webhook event source for DDN alerts
-  - `metrics` - LustrePerfMon metrics polling source
-- Example EDA rulebook for automated responses
-- Unit test framework with pytest
-- CI/CD workflow for linting, sanity, and unit tests
-- Comprehensive documentation (README, CONTRIBUTING, SECURITY, CODE_OF_CONDUCT)
-- Apache-2.0 license
-
-### Requirements
-- Ansible >= 2.16.0
-- Python >= 3.11
-- DDN Insight API access
-
-[1.0.0]: https://github.com/stevefulme1/ansible-ddn/releases/tag/v1.0.0
+- Initial release with filesystem, storage pool, quota, snapshot, and health check modules
+- EDA source plugins (webhook, metrics)
+- Inventory plugin
+- Unit tests and CI pipeline
