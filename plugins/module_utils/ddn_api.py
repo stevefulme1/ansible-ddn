@@ -10,6 +10,7 @@ __metaclass__ = type
 import json
 from ansible.module_utils.urls import open_url
 from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
+from ansible.module_utils.six.moves.urllib.parse import urlencode
 
 
 class DDNAPIClient:
@@ -102,7 +103,7 @@ class DDNAPIClient:
         url = f"{self.base_url}{endpoint}"
 
         if params:
-            query_string = '&'.join([f"{k}={v}" for k, v in params.items()])
+            query_string = urlencode(params)
             url = f"{url}?{query_string}"
 
         headers = self._get_headers()
