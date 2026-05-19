@@ -13,9 +13,11 @@ argument_specs:
       ddn_health_check_password:
         description: Authentication password
         type: str
+        no_log: true
       ddn_health_check_api_key:
         description: API key for authentication
         type: str
+        no_log: true
       ddn_health_check_validate_certs:
         description: Validate SSL certificates
         type: bool

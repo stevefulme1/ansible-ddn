@@ -20,14 +20,16 @@ async def webhook_handler(request):
 
 async def main(queue, args):
     """Main event source loop."""
+    host = args.get("host", "127.0.0.1")
     port = args.get("port", 5000)
-    
-    app = web.Application()
+    max_payload_size = int(args.get("max_payload_size", 1048576))  # 1 MB
+
+    app = web.Application(client_max_size=max_payload_size)
     app.router.add_post("/webhook", webhook_handler)
-    
+
     runner = web.AppRunner(app)
     await runner.setup()
-    site = web.TCPSite(runner, "0.0.0.0", port)
+    site = web.TCPSite(runner, host, port)
     
     await site.start()
     
