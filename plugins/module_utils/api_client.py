@@ -15,6 +15,11 @@ from ansible.module_utils.six.moves.urllib.error import HTTPError
 class ApiClient:
     """Client for DDN Insight REST API."""
 
+    _CONNECTION_KEYS = frozenset([
+        "host", "username", "password", "api_key",
+        "validate_certs", "timeout", "state",
+    ])
+
     def __init__(self, module):
         """Initialize API client from module params."""
         self.module = module
@@ -25,6 +30,10 @@ class ApiClient:
         self.validate_certs = module.params.get("validate_certs", True)
         self.base_url = f"https://{self.host}/api/v1"
         self.token = None
+
+    def _filter_params(self, params):
+        """Remove connection/auth keys so credentials never reach the API body."""
+        return {k: v for k, v in params.items() if k not in self._CONNECTION_KEYS}
 
     def _get_headers(self):
         """Get request headers."""
@@ -50,6 +59,7 @@ class ApiClient:
                 data=data,
                 headers={"Content-Type": "application/json"},
                 validate_certs=self.validate_certs,
+                timeout=30,
             )
             result = json.loads(response.read())
             self.token = result.get("token")
@@ -68,6 +78,7 @@ class ApiClient:
                 data=json.dumps(data) if data else None,
                 headers=self._get_headers(),
                 validate_certs=self.validate_certs,
+                timeout=30,
             )
             if response.getcode() == 204:
                 return {}
@@ -85,11 +96,11 @@ class ApiClient:
 
     def create(self, resource_type, data):
         """Create resource."""
-        return self.request("POST", f"/{resource_type}s", data=data)
+        return self.request("POST", f"/{resource_type}s", data=self._filter_params(data))
 
     def update(self, resource_type, resource_id, data):
         """Update resource."""
-        return self.request("PUT", f"/{resource_type}s/{resource_id}", data=data)
+        return self.request("PUT", f"/{resource_type}s/{resource_id}", data=self._filter_params(data))
 
     def delete(self, resource_type, resource_id):
         """Delete resource."""
