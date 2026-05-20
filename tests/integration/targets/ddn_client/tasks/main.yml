@@ -1,24 +1,36 @@
 ---
-- name: Test ddn_client
-  hosts: localhost
-  gather_facts: false
-  tasks:
-    - name: List (check connectivity)
-      stevefulme1.ddn.ddn_client_info:
-        host: "{{ test_host | default('localhost') }}"
-      register: list_result
-      ignore_errors: true
+- name: List (check connectivity)
+  stevefulme1.ddn.ddn_client_info:
+    host: "{{ test_host | default('localhost') }}"
+  register: list_result
+  ignore_errors: true
 
-    - name: Create (check mode)
-      stevefulme1.ddn.ddn_client:
-        host: "{{ test_host | default('localhost') }}"
-        name: "test-resource"
-        state: present
-      check_mode: true
-      register: check_result
-      ignore_errors: true
+- name: Create (check mode)
+  stevefulme1.ddn.ddn_client:
+    host: "{{ test_host | default('localhost') }}"
+    name: test-resource
+    state: present
+  check_mode: true
+  register: check_result
+  ignore_errors: true
 
-    - name: Verify check mode
-      ansible.builtin.assert:
-        that:
-          - check_result is changed or check_result is failed
+- name: Verify check mode
+  ansible.builtin.assert:
+    that:
+      - check_result is changed or check_result is failed
+
+- name: Create
+  stevefulme1.ddn.ddn_client:
+    host: "{{ test_host | default('localhost') }}"
+    name: test-resource
+    state: present
+  register: create_result
+  ignore_errors: true
+
+- name: Delete
+  stevefulme1.ddn.ddn_client:
+    host: "{{ test_host | default('localhost') }}"
+    name: test-resource
+    state: absent
+  register: delete_result
+  ignore_errors: true

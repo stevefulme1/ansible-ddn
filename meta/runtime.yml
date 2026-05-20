@@ -1,14 +1,11 @@
+---
 requires_ansible: '>=2.16.0'
 action_groups:
-  ddn:
-  - ddn_filesystem
-  - ddn_filesystem_info
-  - ddn_storage_pool
-  - ddn_storage_pool_info
-  - ddn_quota
-  - ddn_quota_info
-  - ddn_snapshot
-  - ddn_snapshot_info
-  - ddn_health_check
-  - ddn_health_check_info
-  - ddn_cluster_info
+    ddn:
+        - ddn_filesystem
+        - ddn_filesystem_info
+        - ddn_storage_pool
+        - ddn_storage_pool_info
+        - ddn_quota
+        - ddn_quota_info
+        - ddn_cluster_info
