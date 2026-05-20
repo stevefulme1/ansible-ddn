@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Copyright 2026 Steve Fulmer
 # Apache-2.0 (see LICENSE)
@@ -18,7 +17,7 @@ async def main(queue, args):
     username = args.get("username")
     password = args.get("password")
     interval = args.get("interval", 60)
-    
+
     while True:
         try:
             async with aiohttp.ClientSession() as session:
@@ -28,7 +27,7 @@ async def main(queue, args):
                     await queue.put({"metrics": metrics})
         except Exception as e:
             await queue.put({"error": str(e)})
-        
+
         await asyncio.sleep(interval)
 
 

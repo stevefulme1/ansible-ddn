@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Copyright 2026 Steve Fulmer
 # Apache-2.0 (see LICENSE)
@@ -30,9 +29,9 @@ async def main(queue, args):
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, host, port)
-    
+
     await site.start()
-    
+
     try:
         await asyncio.sleep(float("inf"))
     finally:

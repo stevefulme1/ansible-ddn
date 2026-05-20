@@ -1,7 +1,7 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Copyright 2026 Steve Fulmer
-# Apache-2.0 (see LICENSE)
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """DDN dynamic inventory plugin."""
 
@@ -10,7 +10,6 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 name: ddn_inventory
-plugin_type: inventory
 short_description: DDN Insight dynamic inventory
 version_added: "1.0.0"
 description:

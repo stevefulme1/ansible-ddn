@@ -30,19 +30,25 @@ options:
     password:
         description: Authentication password.
         type: str
-        no_log: true
     api_key:
         description: API key for authentication.
         type: str
-        no_log: true
     validate_certs:
         description: Whether to validate SSL certificates.
         type: bool
         default: true
-
-    filesystem:
-        description: The filesystem.
+    name:
+        description: Filter by name.
         type: str
+    filesystem:
+        description: Filesystem name.
+        type: str
+        required: true
+    quota_type:
+        description: Type of quota.
+        type: str
+        choices: ['user', 'group']
+
     limit:
         description:
           - Maximum number of results to return.

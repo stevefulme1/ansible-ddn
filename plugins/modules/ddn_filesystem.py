@@ -36,15 +36,19 @@ options:
     password:
         description: Authentication password.
         type: str
-        no_log: true
     api_key:
         description: API key for authentication.
         type: str
-        no_log: true
     validate_certs:
         description: Whether to validate SSL certificates.
         type: bool
         default: true
+    filesystem_id:
+        description: Filesystem identifier.
+        type: str
+    name:
+        description: Filesystem name.
+        type: str
 """
 
 EXAMPLES = r"""
@@ -105,7 +109,7 @@ def main():
         if resource_id:
             existing = client.get("filesystem", resource_id)
         elif module.params.get("name"):
-            candidates = client.list("filesystem", {{"name": module.params["name"]}})
+            candidates = client.list("filesystem", {"name": module.params["name"]})
             if candidates:
                 existing = candidates[0]
 

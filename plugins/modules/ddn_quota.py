@@ -35,15 +35,32 @@ options:
     password:
         description: Authentication password.
         type: str
-        no_log: true
     api_key:
         description: API key for authentication.
         type: str
-        no_log: true
     validate_certs:
         description: Whether to validate SSL certificates.
         type: bool
         default: true
+    name:
+        description: Quota name.
+        type: str
+        required: true
+    filesystem:
+        description: Filesystem name.
+        type: str
+        required: true
+    quota_type:
+        description: Type of quota.
+        type: str
+        default: user
+        choices: ['user', 'group']
+    hard_limit:
+        description: Hard limit for the quota.
+        type: str
+    soft_limit:
+        description: Soft limit for the quota.
+        type: str
 """
 
 EXAMPLES = r"""

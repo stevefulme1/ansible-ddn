@@ -1,6 +1,6 @@
 """Unit tests for ddn_filesystem module."""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 
 class TestCreate:

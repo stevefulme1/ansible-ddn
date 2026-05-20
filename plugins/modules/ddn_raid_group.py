@@ -108,7 +108,7 @@ def main():
         if resource_id:
             existing = client.get("raid_group", resource_id)
         elif module.params.get("name"):
-            candidates = client.list("raid_group", {{"name": module.params["name"]}})
+            candidates = client.list("raid_group", {"name": module.params["name"]})
             if candidates:
                 existing = candidates[0]
 
