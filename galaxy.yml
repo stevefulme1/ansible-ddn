@@ -1,11 +1,11 @@
 ---
 namespace: stevefulme1
 name: ddn
-version: 2.1.2
+version: 0.1.0
 readme: README.md
 authors:
   - Steven Fulmer <sfulmer@redhat.com>
-description: Ansible Collection for DDN Storage (DataDirect Networks) automation
+description: Ansible Collection for DDN Storage (DataDirect Networks) automation Status: Pre-release. Under active development.
 license_file: LICENSE
 tags:
   - storage
