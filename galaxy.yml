@@ -6,7 +6,6 @@ readme: README.md
 authors:
   - Steven Fulmer <sfulmer@redhat.com>
 description: Ansible Collection for DDN Storage (DataDirect Networks) automation. Pre-release, under active development.
-license_file: LICENSE
 tags:
   - storage
   - lustre
