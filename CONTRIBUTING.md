@@ -1,166 +1,27 @@
-# Contributing to ansible-ddn
+# WELCOME TO ANSIBLE GITHUB
 
-Thank you for your interest in contributing to the DDN Storage Ansible Collection.
+Hi! Nice to see you here!
 
-## How to Contribute
+## QUESTIONS ?
 
-### Reporting Bugs
+Please see the [Community Guide](https://docs.ansible.com/ansible/latest/community/index.html) for information on how to ask questions on the [mailing lists](https://docs.ansible.com/ansible/latest/community/communication.html#mailing-list-information) and IRC.
 
-If you find a bug, please open an issue with:
-- Clear description of the problem
-- Steps to reproduce
-- Expected vs actual behavior
-- Ansible version, Python version, collection version
-- DDN Insight API version (if applicable)
-- Error messages or logs
+The GitHub issue tracker is not the best place for questions for various reasons, but both IRC and the mailing list are very helpful places for those things, as the community page explains best.
 
-### Suggesting Enhancements
+## CONTRIBUTING ?
 
-For feature requests:
-- Describe the use case and problem being solved
-- Provide example playbook or workflow
-- Consider backward compatibility
+By contributing to this project you agree to the Developer Certificate of Origin (DCO). This document was created by the Linux Kernel community and is a simple statement that you, as a contributor, have the legal right to make the contribution.
 
-### Pull Requests
+You can read more about the [DCO and Contributor License Agreements](https://docs.ansible.com/ansible/latest/community/collection_contributors/collection_requirements.html#contributor-license-agreements) on the Ansible docsite.
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/my-feature`)
-3. Make your changes
-4. Add tests for new functionality
-5. Ensure all tests pass
-6. Update documentation
-7. Commit with descriptive message
-8. Push to your fork
-9. Open a pull request
+Please review the [Community Guide](https://docs.ansible.com/ansible/latest/community/index.html) for more information on contributing to Ansible.
 
-## Development Setup
+## BUG TO REPORT ?
 
-### Prerequisites
+First and foremost, also check the [Community Guide](https://docs.ansible.com/ansible/latest/community/index.html).
 
-- Python 3.11 or later
-- Ansible 2.16.0 or later
-- Git
-- Docker (for testing)
+You can report bugs or make enhancement requests at the [Ansible GitHub issue page](http://github.com/ansible/ansible/issues/new/choose) by filling out the issue template that will be presented.
 
-### Local Development
+Also please make sure you are testing on the latest released version of Ansible or the development branch; see the [Installation Guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) for details.
 
-```bash
-# Clone repository
-git clone https://github.com/stevefulme1/ansible-ddn.git
-cd ansible-ddn
-
-# Install development dependencies
-pip install -r requirements.txt
-
-# Run tests
-pytest tests/unit
-ansible-test sanity --docker
-```
-
-## Code Standards
-
-### Python Code
-
-- Follow PEP 8 style guide
-- Use type hints where appropriate
-- Maximum line length: 120 characters
-- Docstrings for all public functions and classes
-
-### Ansible Modules
-
-- Include full DOCUMENTATION, EXAMPLES, and RETURN blocks
-- Support check mode (`supports_check_mode=True`)
-- Handle errors gracefully with meaningful messages
-- Use module_utils for shared code
-- Follow Ansible module development best practices
-
-### Testing Requirements
-
-All contributions must include:
-
-1. **Unit Tests**
-   - Test all module functionality
-   - Mock API interactions
-   - Achieve >80% code coverage
-   - Located in `tests/unit/plugins/modules/`
-
-2. **Sanity Tests**
-   - Pass `ansible-test sanity`
-   - No pylint errors
-   - No ansible-lint warnings
-
-3. **Documentation**
-   - Update README.md if adding features
-   - Update CHANGELOG.md with changes
-   - Add module documentation examples
-
-### Running Tests
-
-```bash
-# Unit tests
-pytest tests/unit -v
-
-# Code coverage
-pytest tests/unit --cov=plugins --cov-report=html
-
-# Sanity tests
-ansible-test sanity --docker default
-
-# Specific Python version
-ansible-test sanity --docker default --python 3.11
-
-# Linting
-ansible-lint
-flake8 plugins/
-```
-
-## Documentation
-
-- Module documentation uses Ansible doc fragments
-- README.md provides collection overview and examples
-- CHANGELOG.md follows Keep a Changelog format
-- Code comments explain complex logic
-
-## Commit Message Guidelines
-
-Use clear, descriptive commit messages:
-
-```
-Add ddn_filesystem module for Lustre management
-
-- Implement create, modify, delete operations
-- Support stripe configuration
-- Add comprehensive error handling
-- Include unit tests and documentation
-```
-
-## Code Review Process
-
-1. Maintainers review all pull requests
-2. CI must pass (lint, sanity, unit tests)
-3. At least one maintainer approval required
-4. Changes may be requested for code quality or design
-5. Merge when approved and CI passes
-
-## Versioning
-
-This project uses Semantic Versioning (SemVer):
-- MAJOR: Breaking changes
-- MINOR: New features (backward compatible)
-- PATCH: Bug fixes (backward compatible)
-
-## License
-
-By contributing, you agree that your contributions will be licensed under the Apache-2.0 License.
-
-## Questions?
-
-- Open an issue for questions
-- Check existing issues and documentation first
-- Be respectful and constructive
-
-## Maintainers
-
-- Steven Fulmer (@stevefulme1)
-
-Thank you for contributing!
+Thanks!
