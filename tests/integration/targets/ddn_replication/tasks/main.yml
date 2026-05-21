@@ -1,0 +1,107 @@
+---
+# Integration tests for stevefulme1.ddn.ddn_replication
+
+- name: List ddn_replication resources
+  stevefulme1.ddn.ddn_replication_info:
+    host: "{{ ddn_host | default('localhost') }}"
+    username: "{{ ddn_username | default('admin') }}"
+    password: "{{ ddn_password | default('password') }}"
+    validate_certs: "{{ ddn_validate_certs | default(false) }}"
+  register: list_result
+
+- name: Verify ddn_replication listing
+  ansible.builtin.assert:
+    that:
+      - list_result is not failed
+
+- name: Create ddn_replication (check_mode)
+  stevefulme1.ddn.ddn_replication:
+    host: "{{ ddn_host | default('localhost') }}"
+    username: "{{ ddn_username | default('admin') }}"
+    password: "{{ ddn_password | default('password') }}"
+    validate_certs: "{{ ddn_validate_certs | default(false) }}"
+    name: "ansible-test-{{ resource_prefix }}"
+    state: present
+  check_mode: true
+  register: check_result
+
+- name: Verify check_mode reports changed
+  ansible.builtin.assert:
+    that:
+      - check_result is changed
+
+- name: Create ddn_replication
+  stevefulme1.ddn.ddn_replication:
+    host: "{{ ddn_host | default('localhost') }}"
+    username: "{{ ddn_username | default('admin') }}"
+    password: "{{ ddn_password | default('password') }}"
+    validate_certs: "{{ ddn_validate_certs | default(false) }}"
+    name: "ansible-test-{{ resource_prefix }}"
+    state: present
+  register: create_result
+
+- name: Verify ddn_replication was created
+  ansible.builtin.assert:
+    that:
+      - create_result is changed
+
+- name: Create ddn_replication again (idempotency)
+  stevefulme1.ddn.ddn_replication:
+    host: "{{ ddn_host | default('localhost') }}"
+    username: "{{ ddn_username | default('admin') }}"
+    password: "{{ ddn_password | default('password') }}"
+    validate_certs: "{{ ddn_validate_certs | default(false) }}"
+    name: "ansible-test-{{ resource_prefix }}"
+    state: present
+  register: idem_result
+
+- name: Verify idempotent create
+  ansible.builtin.assert:
+    that:
+      - idem_result is not changed
+
+- name: Delete ddn_replication (check_mode)
+  stevefulme1.ddn.ddn_replication:
+    host: "{{ ddn_host | default('localhost') }}"
+    username: "{{ ddn_username | default('admin') }}"
+    password: "{{ ddn_password | default('password') }}"
+    validate_certs: "{{ ddn_validate_certs | default(false) }}"
+    name: "ansible-test-{{ resource_prefix }}"
+    state: absent
+  check_mode: true
+  register: delete_check
+
+- name: Verify check_mode delete reports changed
+  ansible.builtin.assert:
+    that:
+      - delete_check is changed
+
+- name: Delete ddn_replication
+  stevefulme1.ddn.ddn_replication:
+    host: "{{ ddn_host | default('localhost') }}"
+    username: "{{ ddn_username | default('admin') }}"
+    password: "{{ ddn_password | default('password') }}"
+    validate_certs: "{{ ddn_validate_certs | default(false) }}"
+    name: "ansible-test-{{ resource_prefix }}"
+    state: absent
+  register: delete_result
+
+- name: Verify ddn_replication was deleted
+  ansible.builtin.assert:
+    that:
+      - delete_result is changed
+
+- name: Delete ddn_replication again (idempotent)
+  stevefulme1.ddn.ddn_replication:
+    host: "{{ ddn_host | default('localhost') }}"
+    username: "{{ ddn_username | default('admin') }}"
+    password: "{{ ddn_password | default('password') }}"
+    validate_certs: "{{ ddn_validate_certs | default(false) }}"
+    name: "ansible-test-{{ resource_prefix }}"
+    state: absent
+  register: delete_idem
+
+- name: Verify idempotent delete
+  ansible.builtin.assert:
+    that:
+      - delete_idem is not changed

@@ -1,0 +1,7 @@
+---
+# Integration test configuration for stevefulme1.ddn
+ddn_host: "CHANGEME"
+ddn_username: "admin"
+ddn_password: "CHANGEME"
+ddn_validate_certs: false
+resource_prefix: "ansible-ci-ddn"
